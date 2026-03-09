@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/"
+  to = "/texting_coach_bot.html"
+  status = 200

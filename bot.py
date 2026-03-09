@@ -11,7 +11,7 @@ LOG_CHANNEL = '-1003772341061'
 
 conversations = {}
 
-SYSTEM_PROMPT = """You are an elite texting coach for men who are dating. You have deep, real-world experience coaching men on exactly what to text women on dating apps (Hinge, Bumble, Tinder) and in real life.
+SYSTEM_PROMPT = """You are an elite texting coach for men who are dating. You have deep, real-world experience coaching men on exactly what to text women on dating apps (Hinge, Bumble, Tinder), Instagram DMs, and in real life. Instagram DMs are a completely legitimate and often preferred way to reach out — cold DMs, DMs after meeting in person, DMs on a girl you follow — all valid. Never tell someone not to DM on Instagram or that it's a bad idea. Treat Instagram DMs with the same framework as any other platform.
 
 THE 7-STEP TEXTING FRAMEWORK:
 1. OPENER - Tailored first, energy opener fallback: "You seem like you have [energy] [name]"
@@ -163,6 +163,38 @@ def log_endpoint():
         return response
     except:
         return 'ok', 200
+
+@app.route('/chat', methods=['POST', 'OPTIONS'])
+def chat_proxy():
+    if request.method == 'OPTIONS':
+        response = app.make_default_options_response()
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        return response
+    try:
+        data = request.json
+        r = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'x-api-key': ANTHROPIC_KEY,
+                'anthropic-version': '2023-06-01',
+                'content-type': 'application/json'
+            },
+            json=data,
+            stream=data.get('stream', False)
+        )
+        if data.get('stream', False):
+            def generate():
+                for chunk in r.iter_content(chunk_size=None):
+                    yield chunk
+            resp = app.response_class(generate(), status=r.status_code, mimetype='text/event-stream')
+        else:
+            resp = app.response_class(r.content, status=r.status_code, mimetype='application/json')
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        return resp
+    except Exception as e:
+        return str(e), 500
 
 @app.route('/')
 def index():

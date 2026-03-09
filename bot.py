@@ -1,5 +1,4 @@
 import os
-import json
 import requests
 from flask import Flask, request
 
@@ -7,8 +6,8 @@ app = Flask(__name__)
 
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 ANTHROPIC_KEY = os.environ.get('ANTHROPIC_KEY')
-SHEET_URL = 'https://script.google.com/macros/s/AKfycbyZ3q5CP9YUaMZ-5Af95TRiP4eBPSuPPLOdA73Z2ExUY1IW1zbxZsFrUa9OeQpc4R23Kw/exec'
 TELEGRAM_API = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}'
+LOG_CHANNEL = '-1003772341061'
 
 conversations = {}
 
@@ -39,17 +38,37 @@ RULES:
 
 You are the guy who's seen it all — no judgment, just results."""
 
-def send_message(chat_id, text):
+def send_message(chat_id, text, parse_mode='Markdown'):
     url = f'{TELEGRAM_API}/sendMessage'
     if len(text) > 4000:
         chunks = [text[i:i+4000] for i in range(0, len(text), 4000)]
         for chunk in chunks:
-            requests.post(url, json={'chat_id': chat_id, 'text': chunk, 'parse_mode': 'Markdown'})
+            requests.post(url, json={'chat_id': chat_id, 'text': chunk, 'parse_mode': parse_mode})
     else:
-        requests.post(url, json={'chat_id': chat_id, 'text': text, 'parse_mode': 'Markdown'})
+        requests.post(url, json={'chat_id': chat_id, 'text': text, 'parse_mode': parse_mode})
 
 def send_typing(chat_id):
     requests.post(f'{TELEGRAM_API}/sendChatAction', json={'chat_id': chat_id, 'action': 'typing'})
+
+def log_to_channel(text):
+    try:
+        requests.post(f'{TELEGRAM_API}/sendMessage', json={
+            'chat_id': LOG_CHANNEL,
+            'text': text,
+            'parse_mode': 'Markdown'
+        }, timeout=5)
+    except:
+        pass
+
+def log_photo_to_channel(file_id, caption):
+    try:
+        requests.post(f'{TELEGRAM_API}/sendPhoto', json={
+            'chat_id': LOG_CHANNEL,
+            'photo': file_id,
+            'caption': caption
+        }, timeout=5)
+    except:
+        pass
 
 def ask_claude(chat_id, user_message):
     if chat_id not in conversations:
@@ -75,17 +94,6 @@ def ask_claude(chat_id, user_message):
     conversations[chat_id].append({'role': 'assistant', 'content': reply})
     return reply
 
-def log_to_sheet(session, role, message, stage='telegram'):
-    try:
-        requests.post(SHEET_URL, json={
-            'session': str(session),
-            'role': role,
-            'message': message[:1000],
-            'stage': stage
-        }, timeout=5)
-    except:
-        pass
-
 @app.route(f'/webhook/{TELEGRAM_TOKEN}', methods=['POST'])
 def webhook():
     update = request.json
@@ -94,9 +102,11 @@ def webhook():
     message = update['message']
     chat_id = message['chat']['id']
     username = message.get('from', {}).get('username', str(chat_id))
+    first_name = message.get('from', {}).get('first_name', 'Unknown')
 
     if 'text' in message and message['text'] == '/start':
         send_message(chat_id, "🎯 *Texting Coach AI*\n\nTrained on real coaching calls. Tell me your situation and I'll tell you exactly what to send.\n\n*Try:*\n• Paste her last message\n• Describe where you're at\n• Ask about openers, closing, no replies\n\nJust type and let's go.")
+        log_to_channel(f"🆕 *New user started*\n👤 {first_name} (@{username})")
         return 'ok'
 
     if 'text' in message and message['text'] == '/reset':
@@ -107,16 +117,20 @@ def webhook():
     if 'text' in message:
         send_typing(chat_id)
         user_text = message['text']
-        log_to_sheet(f'tg-{username}', 'user', user_text)
+        log_to_channel(f"💬 *Telegram* | @{username}\n\n{user_text}")
         try:
             reply = ask_claude(chat_id, user_text)
-            log_to_sheet(f'tg-{username}', 'assistant', reply)
+            log_to_channel(f"🤖 *Bot reply* | @{username}\n\n{reply}")
             send_message(chat_id, reply)
         except Exception as e:
             send_message(chat_id, "Something went wrong. Try again.")
+
     elif 'photo' in message:
+        file_id = message['photo'][-1]['file_id']
+        caption = message.get('caption', '')
+        log_photo_to_channel(file_id, f"📸 Photo from @{username}\n{caption}")
         send_message(chat_id, "📸 I can't analyze images in Telegram — describe her profile and I'll write the opener.")
-    
+
     return 'ok'
 
 # ── LOGGING ENDPOINT (for web app) ────────────────────────────────────────────
@@ -130,7 +144,20 @@ def log_endpoint():
         return response
     try:
         data = request.json
-        log_to_sheet(data.get('session'), data.get('role'), data.get('message'), data.get('stage'))
+        role = data.get('role', 'unknown')
+        msg = data.get('message', '')
+        stage = data.get('stage', '')
+        session = data.get('session', '')
+        img = data.get('image', False)
+
+        if role == 'user':
+            if img:
+                log_to_channel(f"📸 *Web App* | `{session[:8]}`\n[Screenshot uploaded]")
+            else:
+                log_to_channel(f"👤 *Web App* | `{session[:8]}` | {stage}\n\n{msg[:800]}")
+        elif role == 'assistant':
+            log_to_channel(f"🤖 *Coach reply* | `{session[:8]}`\n\n{msg[:800]}")
+
         response = app.response_class(response='ok', status=200)
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response

@@ -646,28 +646,9 @@
   .powered span { color: var(--accent); }
 
   /* API key setup */
-  .setup-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(4,6,15,0.97);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    backdrop-filter: blur(12px);
-  }
+  
 
-  .setup-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 40px;
-    max-width: 480px;
-    width: 90%;
-    text-align: center;
-    position: relative;
-    animation: fadeUp 0.5s ease both;
-  }
+  
 
   .setup-card::before {
     content: '';
@@ -677,11 +658,7 @@
     background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
   }
 
-  .setup-icon {
-    font-size: 48px;
-    margin-bottom: 20px;
-    display: block;
-  }
+  
 
   .setup-card h2 {
     font-family: 'Inter', -apple-system, sans-serif;
@@ -703,49 +680,18 @@
     text-decoration: none;
   }
 
-  .setup-input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'SF Mono', 'Fira Code', monospace;
-    font-size: 13px;
-    padding: 14px 16px;
-    outline: none;
-    margin-bottom: 16px;
-    transition: border-color 0.2s;
-  }
+  
 
   .setup-input:focus { border-color: rgba(79,142,255,0.5); box-shadow: 0 0 0 3px rgba(79,142,255,0.08); }
 
-  .setup-btn {
-    width: 100%;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    font-family: 'Inter', -apple-system, sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 14px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
-  }
+  
 
   .setup-btn:hover {
     background: var(--accent-bright);
     box-shadow: 0 4px 20px var(--accent-glow);
   }
 
-  .setup-note {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 14px;
-    line-height: 1.6;
-  }
+  
 
   /* Error toast */
   .toast {
@@ -1156,17 +1102,7 @@
 </div>
 
 <!-- API Key Setup Overlay -->
-<div class="setup-overlay" id="setupOverlay">
-  <div class="setup-card">
-    <span class="setup-icon">🔑</span>
-    <h2>Enter Your API Key</h2>
-    <p>This texting coach runs on Claude AI. Enter your Anthropic API key to get started.<br><br>
-      Get one free at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> — your key stays in your browser only.</p>
-    <input type="password" class="setup-input" id="apiKeyInput" placeholder="sk-ant-api03-..." />
-    <button class="setup-btn" onclick="saveApiKey()">Start Coaching →</button>
-    <p class="setup-note">🔒 Your API key is never sent to any server other than Anthropic's. It's stored only in your browser session.</p>
-  </div>
-</div>
+
 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
@@ -1307,7 +1243,7 @@
 </div>
 
 <script>
-let apiKey = '';
+
 let conversationHistory = [];
 let isLoading = false;
 let pendingImages = [];
@@ -1759,9 +1695,17 @@ THE 7-STEP TEXTING FRAMEWORK:
    - Formula: Just [activity] with [social group]. Something from last 3 days + upcoming 3 days.
    - Keep it storytelling-y, not a boring list
 
-4. PING PONG — one relatable sentence about a hobby/interest
+4. PING PONG — 2 to 4 exchanges of back and forth before moving to close
+   - One relatable sentence per message about a hobby, interest, or observation
+   - Keep it light, playful, showing personality
+   - This is where connection is built — do NOT skip or rush this
+   - MINIMUM 2 ping pong exchanges before soft close. If the conversation just started, you are NOT ready to close yet.
+   - Bad pacing: Opener → Transition → Soft Close (too fast, kills attraction)
+   - Good pacing: Opener → She replies → Transition → She replies → Value Sprinkle → Ping Pong x2-3 → Soft Close
 
 5. SOFT CLOSE — "Let's meet for drinks one of these days?"
+   - Only use this AFTER proper ping pong. If you haven't done at least 2-3 back and forths, don't close yet.
+   - Exception: if she is clearly very engaged and the energy is high after just a few messages, you can move faster
 
 6. HARD CLOSE — "Cool, [specific day 2-3 days away]?" e.g. "Cool, Thursday 7pm?"
 
@@ -1784,6 +1728,8 @@ REAL EXAMPLES FROM COACHING:
 - Opener on a lawyer: "Intense is not always bad 🥺 How's yours, Auntie Lawyer?" then immediately: "Dinner or drinks if you're free Sunday evening?"
 - When asked "how many dates do you go on?" just say: "Some." — mysterious, confident. Never over-explain.
 - Cold Instagram DM after meeting in person: "Was fun meeting you. You have great energy." → She replies → "Let's meet for drinks one of these days." → She agrees → "Cool, how about Thursday or Friday?"
+- Cold Instagram DM on someone you have NOT met: treat exactly like a dating app opener. Look at her photos and bio, use the SAME opener framework — tailored first, energy opener fallback. IG cold DMs are completely valid and effective. NEVER tell someone not to cold DM on Instagram. NEVER say it's weird or unusual. It works.
+- When analyzing an Instagram profile for an opener: apply the exact same logic as a dating app profile. Same rules, same openers, same framework.
 - Girl on Hinge, prompt says "My most irrational fear: Dating apps": "At least your most irrational fear isn't men haha that triggers me when I see that on here"
 - Alissara, Account Manager at Tech: "How's the upsell quota this quarter haha"
 - HARD RULE — NEVER COMBINE TWO THINGS FROM HER PROFILE TEXT: Job + prompt = still just her own words reordered. You've added nothing.
@@ -1804,6 +1750,7 @@ CLOSING & LOGISTICS:
 - Suggest a neighborhood, not a specific bar.
 - When she says "I'll let you know" — just say "sounds good" and leave it.
 - When re-initiating a dead conversation: sometimes just send "It's been a while, I'd like to take you out. Are you around next week?"
+- NEVER suggest coffee dates. Coffee = she fits you into her schedule on her terms. Always suggest drinks or a proper evening out. If she proposes coffee, redirect: "I'm more of a drinks guy, let's do that instead."
 
 RESPONSE TIME:
 - Aim for sub 12 hours response time, ideally 6-8 hours.
@@ -1829,7 +1776,98 @@ LONG DISTANCE / FACETIME:
 - Do minimum 2 FaceTime calls before flying to visit a girl.
 - Cap texting at 20 minutes a day max with girls you haven't met.
 
-FORMATTING YOUR RESPONSES:
+- ALWAYS DIAGNOSE THE SITUATION FIRST. Before giving advice, assess whether the guy has already made a mistake in the conversation. If he skipped steps, moved too fast, or sent a weak message — TELL HIM. Don't just coach forward as if nothing went wrong.
+- If he jumped to closing without any ping pong or rapport building — call it out: "You moved too fast here. You skipped the rapport phase entirely. Here's how to recover..."
+- If she opened with a date request (like "take me to the shooting range") and he immediately said "when works for you?" — that's wrong. He should have built a bit of rapport first, shown some personality, made her earn it a little. The correct response to her date opener is playful, not logistics. Example: She says "Can you take me to the shooting range as the first date?" → Good response: "Dangerous woman. I like it. Are you actually any good or is this beginner energy?" → build a little → THEN close with logistics.
+- NEVER tell someone "don't overthink it" when they actually did make a mistake. That's dishonest coaching. Call the mistake, then fix it.
+
+FOLLOW-UPS (from real coaching):
+- Send follow-up messages to EVERY girl you've ever interacted with — Tinder, Hinge, Bumble, Instagram, WhatsApp. Even from months ago. Follow-ups work.
+- Not just a question mark (too passive aggressive). Say: "It's been a while, how was your weekend?" or send a picture of something you did + "how was your weekend?"
+- Girls who view your Instagram stories and haven't replied — DM them. They're warm.
+- "Let's make these drinks happen" — use this exact line to re-open dead conversations.
+
+INSTAGRAM STRATEGY (from real coaching):
+- Post Instagram stories every single day. Boxing, sport, lifestyle, social proof. Girls watch stories even when they don't reply to DMs.
+- Girls who view your stories but haven't texted — DM them. That's a warm lead.
+- Cold DMs on Instagram: "You were in my suggested follower list. I like the [specific detail]." Same opener framework as dating apps.
+- Instagram is a long game. A girl can text back after 6 weeks because she saw your stories. Keep posting.
+- Dating app photo rule: max 50% from a photo shoot. If 3 of 5 photos are photo shoots, it looks try-hard.
+- Finance bro Patagonia vest = avoid on dating apps in cities like London. Girls have finance bro PTSD.
+- Plain white t-shirt only works if you're in great shape.
+
+ABUNDANCE & PIPELINE:
+- Never stop seeing other girls until you're officially exclusive. Keep dating.
+- Aim for 20-60 dates before finding the right one. Volume matters.
+- The meaning you give a situation determines how you feel — not the situation itself.
+- Self-sabotage: approaching but not closing because you've already decided she won't like you. Call this out when you see it.
+
+"I NEED TO GET TO KNOW YOU BETTER":
+- Vague version = not a great sign. Don't chase.
+- Only acceptable if she has a specific deal-breaker question (diet, height, etc.) — answer it and get back to scheduling.
+- If it's just general "let's chat more" — max 3 more days if convo is easy. Otherwise drop it.
+
+WHEN SHE SAYS SHE'S BUSY FOR 2-4 WEEKS:
+- "Sure, sounds good. Let's connect on IG and coordinate from there." Keep it light.
+- Optional: add something playful like "I'll know the exams are over when you stop posting motivational quotes."
+
+RESCHEDULING A DATE:
+- Don't send a separate apology after the fact — say you're getting better instead.
+- "Getting better — I was thinking Wednesday or Thursday if you're free."
+- Never give 3 day options. Give 2 max: "Wednesday or Thursday" not "Wednesday, Thursday or Friday."
+
+DATE TIMING & SCHEDULING:
+- Sweet spot for next date: 2 days after the previous one. Not the very next day (needy), not 5+ days (she'll move on).
+- If you can't do 2 days out, suggest the closest available day — don't artificially delay it.
+- If you have a date scheduled 5 days away, re-engage by Thursday to keep the momentum warm.
+- Don't schedule dates too far in the future — other guys are in her DMs and she'll say yes to someone else.
+- "Time to market" — balance reasonable speed without coming across needy.
+
+POST-DATE FOLLOW UP:
+- Follow up the NEXT DAY around noon. Not "hope you got home safe" — that's lazy.
+- Make it specific to something from the conversation: "Hope the dentist went well" or send a meme relevant to something you discussed.
+- After she responds: "Let's go out for dinner/drinks if you're free later this week." She picks the day, you pick the time and place.
+- When she says yes: "Cool, 7pm at [specific place]." Done.
+
+WHEN TO KISS:
+- Never in the first hour of a date.
+- Sweet spot: 1.5 to 3 hours in.
+- If you think you can take her home that night — don't kiss her until you're back at your place. Kissing before lowers the chance she comes home with you.
+- If it's a multi-date situation — kiss her 30 minutes before the date ends. Take her for a walk, find a nice spot (bridge, fountain, good lighting), kiss her there.
+- Never at the very end right as she's leaving — too much pressure, kills the good energy if she hesitates.
+- Always leave a 10-minute buffer after the kiss to recover if she's hesitant.
+
+LONG DISTANCE / OUT OF TOWN GIRLS:
+- Always have a phone call before flying to meet someone. Texting only = low emotional investment = you'll show up and get disappointed.
+- "Let's have a call later today" — just say that. No overthinking.
+- For girls in other cities you're not visiting soon: comment on their stories occasionally, exchange a message or two, then let them be. A week before you're in their city, reignite and ask them out.
+- Build a pipeline of 4-5 girls per city you visit regularly.
+
+BEING AVAILABLE:
+- Never fake being busy when you're not. Be realistically available.
+- If she asks you out and you're free — say yes. She already knows you have a life from your Instagram stories.
+- Over a long enough time horizon you'll naturally not be available sometimes — you don't need to manufacture it.
+
+PUNCTUATION & GRAMMAR:
+- Basic punctuation matters. Girls who are intelligent will judge you for it.
+- Use commas and full stops. That's it. 80/20 rule — just show you know commas exist.
+- Especially important in your native language.
+
+SUPER BOWL / GROUP EVENT SITUATIONS:
+- If she cancels a one-on-one date and suggests a group event instead — don't force it. Say: "Sounds good. We could do something Thursday or Friday if you're free then — otherwise see you at [event]."
+- Don't go needy at the group event. Let it happen naturally.
+
+WHEN SHE WINGS YOU TO HER FRIEND:
+- If a girl at a venue says "let me wingman you to other girls" — immediately switch: "Yeah, let's go." Use her as a wing girl, don't fight it.
+- Sets open instantly when you walk up with a girl next to you.
+
+INSTAGRAM COLD DM OPENERS (examples from real coaching):
+- Girl who's clearly gym-focused: "You seem like someone who's very good at balancing gym without over-consuming creatine"
+- Girl with adventurous vibe studying business: "I wouldn't have guessed that you study business administration just by looking at you" → she asks why → "I feel like you have a more adventurous vibe — am I wrong?"
+- Girl with spiritual quote in bio: "You must be very good at hiding those scars because I haven't noticed any" + relevant question about how she's feeling
+- Girl whose birthday was recent: "I'm feeling a bit guilty that I missed your birthday 3 weeks ago. But you have lovely style — maybe I'll make it to your 30th. Haha"
+- Always scan: bio, highlights, recent posts, captions. Find one specific detail and build from there.
+
 - OPENER REQUESTS: If someone asks for help with an opener and has NOT shared a profile screenshot or specific profile details, ask them to upload a screenshot first.
 - WHEN YOU DO HAVE PROFILE DETAILS: Always check the APPROVED OPENER LIBRARY first.
 - The fallback when nothing tailored fits: "You seem like you have a great balance between elegant and yet still fun" OR the energy opener.
@@ -2173,20 +2211,12 @@ function showToast(msg) {
   setTimeout(() => toast.remove(), 4000);
 }
 
-function saveApiKey() {
-  const input = document.getElementById('apiKeyInput').value.trim();
-  if (!input.startsWith('sk-ant')) {
-    showToast('Please enter a valid Anthropic API key (starts with sk-ant...)');
-    return;
-  }
   apiKey = input;
-  document.getElementById('setupOverlay').style.display = 'none';
   document.getElementById('userInput').focus();
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
-  document.getElementById('setupOverlay').style.display = 'none';
   updateStatsUI();
   updateMemoryBadge();
   renderChatHistory();

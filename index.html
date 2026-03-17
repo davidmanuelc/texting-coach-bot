@@ -718,6 +718,31 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
+
+  /* === CONVERSATION ANALYZER === */
+  .convo-analyze-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: linear-gradient(135deg, rgba(167,139,250,0.12), rgba(79,142,255,0.07));
+    border: 1px solid rgba(167,139,250,0.35);
+    color: var(--accent2);
+    font-family: "Inter", -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: left;
+    padding: 13px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 14px;
+    transition: all 0.2s;
+  }
+  .convo-analyze-btn:hover {
+    border-color: var(--accent2);
+    transform: translateX(3px);
+    box-shadow: 0 0 20px rgba(167,139,250,0.15);
+  }
   /* === STAGE SELECTOR === */
   .stage-selector {
     padding: 14px 20px;
@@ -1143,6 +1168,24 @@
         </div>
       </button>
       <input type="file" id="analyzeInput" accept="image/*" multiple style="display:none" onchange="handleAnalyzeUpload(event)">
+
+      <button class="convo-analyze-btn" onclick="triggerConvoAnalyzer()">
+        <span class="hero-reply-icon">🔬</span>
+        <div class="hero-reply-text">
+          <div class="title" style="color:var(--accent2)">Analyze full conversation</div>
+          <div class="sub">Upload screenshots for full forensic breakdown</div>
+        </div>
+      </button>
+      <input type="file" id="convoAnalyzeInput" accept="image/*" multiple style="display:none" onchange="handleConvoAnalyze(event)">
+
+      <button class="convo-analyze-btn" onclick="triggerProfileAudit()" style="border-color:rgba(79,142,255,0.35);background:linear-gradient(135deg,rgba(79,142,255,0.12),rgba(167,139,250,0.06));">
+        <span class="hero-reply-icon">📋</span>
+        <div class="hero-reply-text">
+          <div class="title" style="color:var(--accent-bright)">Full profile audit</div>
+          <div class="sub">Upload profile screenshots for detailed report</div>
+        </div>
+      </button>
+      <input type="file" id="profileAuditInput" accept="image/*" multiple style="display:none" onchange="handleProfileAudit(event)">
 
       <div class="section-label">Quick Questions</div>
       <button class="quick-btn" onclick="sendQuick('She replied with one word to my opener. What do I do?')"><span class="btn-icon">😬</span> She gave a one-word reply</button>
@@ -2593,6 +2636,149 @@ function showToast(msg) {
 }
 
 
+
+
+// == CONVERSATION ANALYZER ==
+function triggerConvoAnalyzer() {
+  document.getElementById('convoAnalyzeInput').click();
+  closeSidebar();
+}
+
+function handleConvoAnalyze(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const messages = document.getElementById('messages');
+  const loadEl = document.createElement('div');
+  loadEl.id = 'convoLoading';
+  loadEl.className = 'analyzer-loading';
+  loadEl.innerHTML = '<div class="analyzer-loading-icon">🔬</div><div class="analyzer-loading-text">Reading your conversation...</div><div class="analyzer-dots"><span></span><span></span><span></span></div>';
+  messages.appendChild(loadEl);
+  messages.scrollTop = messages.scrollHeight;
+
+  let processed = 0;
+  const images = [];
+  files.forEach(file => {
+    compressImage(file, (base64, mediaType, previewUrl) => {
+      images.push({ base64, mediaType, previewUrl });
+      processed++;
+      if (processed === files.length) runConvoAnalysis(images);
+    });
+  });
+  event.target.value = '';
+}
+
+async function runConvoAnalysis(images) {
+  const prompt = `You are analyzing screenshot(s) of a text conversation between a man and a woman. Give a full forensic coaching breakdown with these exact sections:
+
+**SITUATION READ**
+What platform is this? What stage of the conversation are they at? How many messages in?
+
+**WHAT HE DID WELL**
+Any strong moves, good energy, correct framework steps. Be specific.
+
+**MISTAKES MADE**
+Every mistake, misstep, or missed opportunity. Be brutally honest. Did he skip steps? Move too fast? Too slow? Sound needy? Over-explain? Use bad language?
+
+**WHERE HE STANDS NOW**
+Based on her responses, what is her interest level? Is she engaged, lukewarm, or pulling away?
+
+**DIAGNOSIS**
+One paragraph summary of the core issue if there is one.
+
+**EXACT NEXT MESSAGE TO SEND**
+Give the exact text he should send right now. Put it on its own line in quotes. If the conversation is dead, give a re-engagement message. If he needs to close, close it.
+
+**WHAT TO DO AFTER SHE REPLIES**
+One short paragraph on the next step after she responds.
+
+Be direct. Be a coach not a therapist. No fluff.`;
+
+  const userContent = [
+    ...images.map(img => ({ type: 'image', source: { type: 'base64', media_type: img.mediaType, data: img.base64 } })),
+    { type: 'text', text: prompt }
+  ];
+
+  const loadEl = document.getElementById('convoLoading');
+  if (loadEl) loadEl.remove();
+
+  addMessage('user', 'Full conversation uploaded — give me the complete forensic breakdown.', images.map(i => i.previewUrl));
+  conversationHistory.push({ role: 'user', content: userContent });
+  await streamResponse();
+}
+
+// == PROFILE AUDIT ==
+function triggerProfileAudit() {
+  document.getElementById('profileAuditInput').click();
+  closeSidebar();
+}
+
+function handleProfileAudit(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const messages = document.getElementById('messages');
+  const loadEl = document.createElement('div');
+  loadEl.id = 'auditLoading';
+  loadEl.className = 'analyzer-loading';
+  loadEl.innerHTML = '<div class="analyzer-loading-icon">📋</div><div class="analyzer-loading-text">Auditing your profile...</div><div class="analyzer-dots"><span></span><span></span><span></span></div>';
+  messages.appendChild(loadEl);
+  messages.scrollTop = messages.scrollHeight;
+
+  let processed = 0;
+  const images = [];
+  files.forEach(file => {
+    compressImage(file, (base64, mediaType, previewUrl) => {
+      images.push({ base64, mediaType, previewUrl });
+      processed++;
+      if (processed === files.length) runProfileAudit(images);
+    });
+  });
+  event.target.value = '';
+}
+
+async function runProfileAudit(images) {
+  const prompt = `You are auditing a man's dating app profile. Give a detailed written report with these exact sections:
+
+**OVERALL SCORE: X/10**
+One sentence verdict.
+
+**PHOTOS ANALYSIS**
+Go through each photo. What works, what does not work, what to replace. Be specific about clothing, expressions, backgrounds, angles.
+
+**BIO AND PROMPTS**
+Review the bio and any visible prompts. What is good, what is weak, what to rewrite. Give exact replacement text where needed.
+
+**ENERGY AND VIBE**
+What energy does this profile give off overall? What type of woman will it attract? What type will it repel?
+
+**WHAT IS MISSING**
+What photos or elements are missing that would boost results significantly?
+
+**TOP 3 FIXES**
+The 3 most important changes to make right now, in order of priority.
+
+**OPENER RECOMMENDATION**
+Based on what you see, what is the single best opener style to use when matching with women.
+
+Be honest. Be specific. Give exact rewrites where possible. This is a coaching tool not a compliment machine.`;
+
+  const userContent = [
+    ...images.map(img => ({ type: 'image', source: { type: 'base64', media_type: img.mediaType, data: img.base64 } })),
+    { type: 'text', text: prompt }
+  ];
+
+  const loadEl = document.getElementById('auditLoading');
+  if (loadEl) loadEl.remove();
+
+  addMessage('user', 'Profile screenshots uploaded — give me the full audit report.', images.map(i => i.previewUrl));
+  conversationHistory.push({ role: 'user', content: userContent });
+  await streamResponse();
+}
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('load', () => {

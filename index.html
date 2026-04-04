@@ -1434,7 +1434,6 @@ function saveCurrentChat() {
   renderChatHistory();
 }
 
-function renameChat(id) { const chat = savedChats.find(c => c.id === id); if (!chat) return; const newName = prompt("Name this chat:", chat.customName || chat.preview); if (newName function renderChatHistory() {function renderChatHistory() { newName.trim()) { chat.customName = newName.trim(); localStorage.setItem("tc_chats", JSON.stringify(savedChats)); renderChatHistory(); } }
 function renderChatHistory() {
   const list = document.getElementById('chatHistoryList');
   if (!list) return;
@@ -1444,7 +1443,7 @@ function renderChatHistory() {
   }
   list.innerHTML = savedChats.map(c => `
     <div class="history-item ${c.id === currentChatId ? 'active' : ''}" onclick="loadChat('${c.id}')">
-      <div class="history-preview" style="display:flex;justify-content:space-between;align-items:center;">${c.customName || c.preview} <span onclick="event.stopPropagation();renameChat('${c.id}')" style="font-size:10px;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:4px;border:1px solid var(--border);margin-left:6px;flex-shrink:0;">✏️</span></div>
+      <div class="history-preview">${c.preview}</div>
       <div class="history-date">${c.date}</div>
     </div>
   `).join('');
@@ -1748,7 +1747,7 @@ THE 7-STEP TEXTING FRAMEWORK:
    - One relatable sentence per message about a hobby, interest, or observation
    - Keep it light, playful, showing personality
    - This is where connection is built — do NOT skip or rush this
-   - MINIMUM 2 ping pong exchanges before soft close. If the conversation just started, you are NOT ready to close yet.
+   - MINIMUM 3 to 4 ping pong exchanges before soft close. This is non-negotiable. If the conversation just started you are NOT ready to close yet. If the client has only exchanged 1 or 2 messages with her, explicitly tell them they need to do more ping pong first before closing. NEVER suggest asking her out before there have been at least 3 to 4 back and forth exchanges. If someone pastes a short conversation and asks how to ask her out, tell them they are moving too fast and need to build more rapport first. Give them the next ping pong message to send instead.
    - Bad pacing: Opener → Transition → Soft Close (too fast, kills attraction)
    - Good pacing: Opener → She replies → Transition → She replies → Value Sprinkle → Ping Pong x2-3 → Soft Close
 

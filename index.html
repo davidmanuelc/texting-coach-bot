@@ -1659,8 +1659,8 @@ function startWebSpeech() {
   }
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = false;
+  recognition.continuous = true;
+  recognition.interimResults = true;
   recognition.lang = 'en-US';
 
   const btn = document.getElementById('voiceBtn');
@@ -1685,7 +1685,7 @@ function startWebSpeech() {
   recognition.onerror = () => {
     btn.classList.remove('recording');
     isRecording = false;
-    showToast('Could not hear you — try again.');
+    showToast('Listening... speak now. Tap mic again to stop.');
   };
 
   recognition.start();

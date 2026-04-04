@@ -1352,6 +1352,13 @@ function triggerPreDateChecklist() {
   const prompt = "I have a date coming up. Give me a complete pre-date checklist tailored to my situation. Ask me first: who is she, where did we meet, what date number is this, where are we going, and what time is it. Then give me a personalized checklist covering: mindset, grooming, outfit, logistics, conversation topics to bring up, physical escalation reminders, and how to end the date.";
   sendQuick(prompt);
 }
+function triggerConvoAnalyzer() {
+  const welcome = document.getElementById("welcome");
+  if (welcome) welcome.remove();
+  closeSidebar();
+  const prompt = "FORENSIC CONVERSATION ANALYSIS MODE. The client is going to paste a conversation thread. When they do, give a complete forensic breakdown using this exact structure:\n\n🔍 FORENSIC BREAKDOWN\n\n📊 ATTRACTION LEVEL: Rate the overall attraction level she showed from 1-10 and explain why.\n\n✅ WHAT WORKED: List every specific message or moment that built attraction or momentum. Be specific — quote the actual messages.\n\n❌ WHERE IT WENT WRONG: Identify the exact message or moment where attraction dropped or momentum was lost. Quote it. Explain precisely why it hurt.\n\n⚠️ CRITICAL MISTAKE: Identify the single biggest mistake made in the conversation.\n\n📍 WHERE YOU ARE NOW: Assess the current situation honestly. Is she still interested? Is it recoverable? What is her likely emotional state right now?\n\n💬 SEND THIS NOW: Give the exact message to send right now to re-engage or move forward. Make it specific to this conversation.\n\n🎯 NEXT 3 MOVES: Give the exact sequence of what to do next — message 1, message 2, and when to soft close.\n\nBe brutally honest. Do not sugarcoat. The client needs the truth to improve. Start by asking them to paste the full conversation.";
+  sendQuick(prompt);
+}
 function triggerHelpReply() {
   const input = document.getElementById('userInput');
   const welcome = document.getElementById('welcome');

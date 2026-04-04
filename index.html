@@ -1434,6 +1434,7 @@ function saveCurrentChat() {
   renderChatHistory();
 }
 
+function renameChat(id) { const chat = savedChats.find(c => c.id === id); if (!chat) return; const newName = prompt("Name this chat:", chat.customName || chat.preview); if (newName function renderChatHistory() {function renderChatHistory() { newName.trim()) { chat.customName = newName.trim(); localStorage.setItem("tc_chats", JSON.stringify(savedChats)); renderChatHistory(); } }
 function renderChatHistory() {
   const list = document.getElementById('chatHistoryList');
   if (!list) return;
@@ -1443,7 +1444,7 @@ function renderChatHistory() {
   }
   list.innerHTML = savedChats.map(c => `
     <div class="history-item ${c.id === currentChatId ? 'active' : ''}" onclick="loadChat('${c.id}')">
-      <div class="history-preview">${c.preview}</div>
+      <div class="history-preview" style="display:flex;justify-content:space-between;align-items:center;">${c.customName || c.preview} <span onclick="event.stopPropagation();renameChat('${c.id}')" style="font-size:10px;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:4px;border:1px solid var(--border);margin-left:6px;flex-shrink:0;">✏️</span></div>
       <div class="history-date">${c.date}</div>
     </div>
   `).join('');

@@ -1193,6 +1193,7 @@
       <button class="quick-btn" onclick="sendQuick('How do I ask her out? Walk me through the soft close and hard close.')"><span class="btn-icon">📅</span> How to ask her out</button>
       <button class="quick-btn" onclick="sendQuick('She said I\'ll let you know when I asked her out. What does that mean and what do I do?')"><span class="btn-icon">🤔</span> She said "I'll let you know"</button>
       <button class="quick-btn" onclick="sendQuick('She hasn\'t replied in 3 days. Should I double text and what do I say?')"><span class="btn-icon">📵</span> She stopped replying</button>
+      <button class="quick-btn" onclick="triggerPreDateChecklist()"><span class="btn-icon">📋</span> Pre-date checklist</button>
       <button class="quick-btn" onclick="sendQuick('How do I build genuine confidence with women?')"><span class="btn-icon">💪</span> Building confidence</button>
       <button class="quick-btn" onclick="sendQuick('What are the biggest red flags to watch for in a woman I am dating?')"><span class="btn-icon">🚩</span> Red flags to watch for</button>
       <button class="quick-btn" onclick="sendQuick('How do I approach a girl I do not know in real life? What do I say?')"><span class="btn-icon">🎯</span> How to approach in person</button>
@@ -1342,6 +1343,15 @@ function setStage(el, stage) {
   if (stage === 'closing') trackStat('closes');
 }
 
+function triggerPreDateChecklist() {
+  const welcome = document.getElementById("welcome");
+  if (welcome) welcome.remove();
+  const input = document.getElementById("userInput");
+  input.value = "";
+  closeSidebar();
+  const prompt = "I have a date coming up. Give me a complete pre-date checklist tailored to my situation. Ask me first: who is she, where did we meet, what date number is this, where are we going, and what time is it. Then give me a personalized checklist covering: mindset, grooming, outfit, logistics, conversation topics to bring up, physical escalation reminders, and how to end the date.";
+  sendQuick(prompt);
+}
 function triggerHelpReply() {
   const input = document.getElementById('userInput');
   const welcome = document.getElementById('welcome');
@@ -1747,7 +1757,7 @@ THE 7-STEP TEXTING FRAMEWORK:
    - One relatable sentence per message about a hobby, interest, or observation
    - Keep it light, playful, showing personality
    - This is where connection is built — do NOT skip or rush this
-   - MINIMUM 3 to 4 ping pong exchanges before soft close. This is non-negotiable. If the conversation just started you are NOT ready to close yet. If the client has only exchanged 1 or 2 messages with her, explicitly tell them they need to do more ping pong first before closing. NEVER suggest asking her out before there have been at least 3 to 4 back and forth exchanges. If someone pastes a short conversation and asks how to ask her out, tell them they are moving too fast and need to build more rapport first. Give them the next ping pong message to send instead.
+   - MINIMUM 2 ping pong exchanges before soft close. If the conversation just started, you are NOT ready to close yet.
    - Bad pacing: Opener → Transition → Soft Close (too fast, kills attraction)
    - Good pacing: Opener → She replies → Transition → She replies → Value Sprinkle → Ping Pong x2-3 → Soft Close
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>David AI</title>
 <script>
 (function() {
@@ -238,7 +238,7 @@
   }
 
   .chat-header {
-    padding: 20px 28px; padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding: 20px 28px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -520,7 +520,7 @@
 
   /* === INPUT === */
   .input-area {
-    padding: 20px 28px; padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding: 20px 28px;
     border-top: 1px solid var(--border);
     background: rgba(4,6,15,0.92);
     backdrop-filter: blur(12px);
@@ -1661,7 +1661,7 @@ async function transcribeAudio(blob) {
 }
 
 // Web Speech API voice (simpler, works in Chrome)
-function startWebSpeech() {
+function startWebSpeech() { const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); if (isMobile) { showToast("Tap the 🎤 mic on your keyboard to dictate!"); return; }
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     showToast('Voice input not supported in this browser. Try Chrome.');
     return;

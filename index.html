@@ -1254,7 +1254,7 @@
     </div>
 
     <div class="input-area">
-      <div class="input-hint">💡 Ask any dating question, paste her messages, or <strong style="color:var(--accent2)">📎 upload a screenshot</strong></div>
+      <div class="input-hint">🎤 On mobile, use your keyboard mic to dictate. 💡 Ask any dating question, paste her messages, or <strong style="color:var(--accent2)">📎 upload a screenshot</strong></div>
       <div id="imagePreviewArea"></div>
       <div class="input-row">
         <input type="file" id="imageUpload" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event)">
@@ -1661,7 +1661,7 @@ async function transcribeAudio(blob) {
 }
 
 // Web Speech API voice (simpler, works in Chrome)
-function startWebSpeech() { const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); if (isMobile) { const inp = document.getElementById("userInput"); inp.focus(); inp.click(); return; }
+function startWebSpeech() { const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); if (isMobile) { showToast("Tap the 🎤 mic on your keyboard to dictate!"); return; }
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     showToast('Voice input not supported in this browser. Try Chrome.');
     return;

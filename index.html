@@ -1661,7 +1661,7 @@ async function transcribeAudio(blob) {
 }
 
 // Web Speech API voice (simpler, works in Chrome)
-function startWebSpeech() { const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); if (isMobile) { showToast("Tap the 🎤 mic on your keyboard to dictate!"); return; }
+function startWebSpeech() { const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); if (isMobile) { const inp = document.getElementById("userInput"); inp.focus(); inp.click(); return; }
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     showToast('Voice input not supported in this browser. Try Chrome.');
     return;

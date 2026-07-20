@@ -1059,9 +1059,8 @@
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
   @media (max-width: 700px) {
-  html, body { overflow-x: hidden; max-width: 100vw; }
-  .layout { grid-template-columns: 1fr; max-width: 100vw; overflow-x: hidden; }
-    .layout { grid-template-columns: 1fr; }
+    html, body { overflow-x: hidden; max-width: 100vw; }
+    .layout { grid-template-columns: 1fr; max-width: 100vw; overflow-x: hidden; }
     .sidebar {
       display: flex;
       position: fixed;
@@ -1074,13 +1073,33 @@
     .sidebar.open { transform: translateX(0); }
     .mobile-menu-btn { display: flex; }
     .messages { padding: 16px; max-width: 100vw; }
-  .input-area { padding: 12px 16px; max-width: 100vw; }
-  .bubble { max-width: 85vw; font-size: 14px; }
-  .welcome h2 { font-size: 24px; }
-  .welcome p { font-size: 14px; padding: 0 16px; }
-  .send-btn { width: 44px; height: 44px; }
-  .voice-btn { width: 38px; height: 38px; }
-  .upload-btn { width: 38px; height: 38px; }
+    .input-area { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); max-width: 100vw; }
+    .bubble { max-width: 85vw; font-size: 14px; }
+
+    /* Header: compact, no overflow */
+    .chat-header { padding: 10px 12px; gap: 8px; }
+    .chat-header-left { gap: 8px; min-width: 0; flex: 1; }
+    .chat-title { font-size: 14px; white-space: nowrap; }
+    .chat-subtitle { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-badge { display: none; }
+    .memory-badge { display: none; }
+
+    /* Welcome screen: fit one phone screen better */
+    .welcome { min-height: auto; padding: 20px 0 8px; gap: 12px; }
+    .welcome-icon { width: 56px; height: 56px; font-size: 26px; margin-bottom: 0; }
+    .welcome h2 { font-size: 22px; padding: 0 12px; }
+    .welcome p { font-size: 13px; padding: 0 20px; line-height: 1.6; }
+    .welcome-chips { padding: 0 10px; gap: 6px; }
+    .chip { font-size: 12px; padding: 7px 12px; }
+    .input-hint { font-size: 10px; line-height: 1.5; }
+
+    /* 16px inputs stop iOS auto-zoom */
+    textarea { font-size: 16px; min-height: 46px; padding: 11px 14px; }
+    input { font-size: 16px; }
+
+    .send-btn { width: 44px; height: 44px; }
+    .voice-btn { width: 40px; height: 40px; }
+    .upload-btn { width: 40px; height: 40px; }
   }
 </style>
 </head>
@@ -1094,7 +1113,7 @@
     <div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.03em;color:#eef2ff;margin-bottom:8px;">David AI</div>
     <div style="font-size:13px;color:#5a6a8a;margin-bottom:28px;line-height:1.6;">Enter your access code to continue</div>
     <input id="gateInput" type="password" placeholder="Access code" onkeydown="__gateKey(event)"
-      style="width:100%;background:#0d1528;border:1px solid #1a2540;border-radius:10px;color:#eef2ff;font-family:'Inter',sans-serif;font-size:15px;padding:14px 16px;outline:none;margin-bottom:12px;text-align:center;letter-spacing:0.1em;transition:border-color 0.2s;"
+      style="width:100%;background:#0d1528;border:1px solid #1a2540;border-radius:10px;color:#eef2ff;font-family:'Inter',sans-serif;font-size:16px;padding:14px 16px;outline:none;margin-bottom:12px;text-align:center;letter-spacing:0.1em;transition:border-color 0.2s;"
       onfocus="this.style.borderColor='rgba(79,142,255,0.5)'" onblur="this.style.borderColor='#1a2540'">
     <button onclick="__checkPass()"
       style="width:100%;background:#4f8eff;color:#fff;border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;padding:14px;border-radius:10px;cursor:pointer;letter-spacing:-0.01em;transition:all 0.2s;"
@@ -1255,7 +1274,7 @@
     </div>
 
     <div class="input-area">
-      <div class="input-hint">🎤 On mobile, use your keyboard mic to dictate. 💡 Ask any dating question, paste her messages, or <strong style="color:var(--accent2)">📎 upload a screenshot</strong></div>
+      <div class="input-hint">💡 Ask any dating question, tap 🎤 to dictate, paste her messages, or <strong style="color:var(--accent2)">📎 upload a screenshot</strong></div>
       <div id="imagePreviewArea"></div>
       <div class="input-row">
         <input type="file" id="imageUpload" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event)">

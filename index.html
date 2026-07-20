@@ -1670,41 +1670,78 @@ async function transcribeAudio(blob) {
   showToast('Voice transcription — try speaking again or type your message.');
 }
 
-// Web Speech API voice (simpler, works in Chrome)
-function startWebSpeech() { const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); if (isMobile) { showToast("Tap the 🎤 mic on your keyboard to dictate!"); return; }
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    showToast('Voice input not supported in this browser. Try Chrome.');
+// Web Speech API voice — continuous dictation with live feedback
+let activeRecognition = null;
+function startWebSpeech() {
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const btn = document.getElementById('voiceBtn');
+  const input = document.getElementById('userInput');
+
+  // If already listening, stop
+  if (activeRecognition) {
+    activeRecognition.stop();
     return;
   }
+
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast(isMobile ? 'Tap the mic on your keyboard to dictate instead.' : 'Voice input needs Chrome or Edge. Or just type your message.');
+    return;
+  }
+
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = false;
+  recognition.continuous = true;
+  recognition.interimResults = true;
   recognition.lang = 'en-US';
 
-  const btn = document.getElementById('voiceBtn');
-  btn.classList.add('recording');
-  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
-  isRecording = true;
+  let baseText = input.value ? input.value.trim() + ' ' : '';
+  let finalTranscript = '';
+
+  recognition.onstart = () => {
+    activeRecognition = recognition;
+    isRecording = true;
+    btn.classList.add('recording');
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
+    btn.title = 'Stop listening';
+    showToast('Listening... tap the button again to stop.');
+  };
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    const input = document.getElementById('userInput');
-    input.value = transcript;
+    let interim = '';
+    finalTranscript = '';
+    for (let k = 0; k < event.results.length; k++) {
+      if (event.results[k].isFinal) finalTranscript += event.results[k][0].transcript + ' ';
+      else interim += event.results[k][0].transcript;
+    }
+    input.value = (baseText + finalTranscript + interim).trimStart();
+    autoResize(input);
+    document.getElementById('charCount').textContent = input.value.length + ' / 2000';
+  };
+
+  recognition.onend = () => {
+    activeRecognition = null;
+    isRecording = false;
+    btn.classList.remove('recording');
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`;
+    btn.title = 'Voice input';
+    input.value = (baseText + finalTranscript).trim();
     autoResize(input);
     input.focus();
   };
 
-  recognition.onend = () => {
-    btn.classList.remove('recording');
-    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`;
+  recognition.onerror = (event) => {
+    activeRecognition = null;
     isRecording = false;
-  };
-
-  recognition.onerror = () => {
     btn.classList.remove('recording');
-    isRecording = false;
-    showToast('Could not hear you — try again.');
+    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+      showToast('Microphone blocked. Click the camera/mic icon in your address bar and allow the microphone.');
+    } else if (event.error === 'no-speech') {
+      showToast('No speech detected. Tap the mic and try again.');
+    } else if (event.error === 'network') {
+      showToast('Voice needs an internet connection. Check your connection and try again.');
+    } else {
+      showToast('Voice input hit a snag. Try again or type your message.');
+    }
   };
 
   recognition.start();

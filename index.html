@@ -61,6 +61,11 @@
 
   html, body {
     height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
     background: var(--bg);
     color: var(--text);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
@@ -304,6 +309,8 @@
   .messages {
     flex: 1;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     padding: 28px;
     display: flex;
     flex-direction: column;
@@ -1116,7 +1123,7 @@
 <div id="passwordGate" style="display:none;position:fixed;inset:0;background:#04060f;z-index:99999;align-items:center;justify-content:center;font-family:'Inter',-apple-system,sans-serif;">
   <div style="background:#080d1c;border:1px solid #1a2540;border-radius:20px;padding:44px 40px;max-width:420px;width:90%;text-align:center;position:relative;animation:fadeUp 0.5s ease both;">
     <div style="position:absolute;top:0;left:20%;right:20%;height:2px;background:linear-gradient(90deg,transparent,#4f8eff,#a78bfa,transparent);border-radius:2px;"></div>
-    <div style="font-size:44px;margin-bottom:20px;">🎯</div>
+    <div style="margin-bottom:20px;"><img src="/logo.png" alt="David Meessen" style="width:96px;height:auto;"></div>
     <div style="font-family:'Inter',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.03em;color:#eef2ff;margin-bottom:8px;">David AI</div>
     <div style="font-size:13px;color:#5a6a8a;margin-bottom:28px;line-height:1.6;">Enter your access code to continue</div>
     <input id="gateInput" type="password" placeholder="Access code" onkeydown="__gateKey(event)"
@@ -1266,7 +1273,7 @@
 
     <div class="messages" id="messages">
       <div class="welcome" id="welcome">
-        <div class="welcome-icon">💬</div>
+        <div class="welcome-icon"><img src="/logo.png" alt="David Meessen" style="width:74%;height:74%;object-fit:contain;"></div>
         <h2>Ask me anything about dating</h2>
         <p>Texting, approaching, first dates, physical escalation, mindset, confidence, relationships, red flags, breakups — whatever you need. Paste her messages, upload a screenshot, or just ask.</p>
         <div class="welcome-chips"><button class="chip" onclick="sendQuick('Give me the full question game — every question in order, how to introduce it, how to escalate through it, and when to use it on a date.')">🃏 The question game</button><button class="chip" onclick="sendQuick('Give me the complete texting framework from start to finish — opener, ping pong exchanges, emotional spikes, soft close, and asking her out. Include exact examples.')">📱 Texting framework</button>
@@ -3448,7 +3455,7 @@ function newChat() {
   const messages = document.getElementById('messages');
   messages.innerHTML = `
     <div class="welcome" id="welcome">
-      <div class="welcome-icon">💬</div>
+      <div class="welcome-icon"><img src="/logo.png" alt="David Meessen" style="width:74%;height:74%;object-fit:contain;"></div>
       <h2>What's the situation?</h2>
       <p>Paste her messages, upload a screenshot, or pick a situation below. I'll tell you exactly what to send.</p>
       <div class="welcome-chips"><button class="chip" onclick="sendQuick('Give me the full question game — every question in order, how to introduce it, how to escalate through it, and when to use it on a date.')">🃏 The question game</button><button class="chip" onclick="sendQuick('Give me the complete texting framework from start to finish — opener, ping pong exchanges, emotional spikes, soft close, and asking her out. Include exact examples.')">📱 Texting framework</button>
